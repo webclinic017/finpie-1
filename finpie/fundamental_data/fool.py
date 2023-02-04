@@ -40,57 +40,58 @@ class Earnings(DataBase):
         DataBase.__init__(self)
         self.ticker = ticker
 
-    def transcripts(self, html = True):
+    def transcripts(self, html=True):
         '''
         ....
         '''
 
         url = 'https://www.fool.com/'
-        driver = self._load_driver('none')
-
+        driver = self._load_driver()
         try:
             driver.get(url)
 
             try:
-                element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//div[@id="gdpr-modal-background"]')))
-                element = driver.find_element_by_xpath('//div[@id="gdpr-modal-background"]')
-                self._delete_element(driver, element)
-                element = driver.find_element_by_xpath('//div[@id="gdpr-modal-content"]')
-                self._delete_element(driver, element)
+                element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//button[@aria-label="Close"]')))
+                element = driver.find_element(By.XPATH, '//button[@aria-label="Close"]')
+                element.click()
+                time.sleep(2)
             except:
                 pass
-
-            element = driver.find_element_by_xpath('//input[@class="ticker-input-input"]')
+            element = driver.find_element(By.XPATH, '//input[@class="searchbox ticker-input-input"]')
             element.clear()
             element.send_keys(self.ticker)
             time.sleep(0.2)
             element.send_keys(' ')
             time.sleep(1)
             element.send_keys(Keys.RETURN)
-
-            try:
-                element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//div[@id="gdpr-modal-background"]')))
-                element = driver.find_element_by_xpath('//div[@id="gdpr-modal-background"]')
-                self._delete_element(driver, element)
-                element = driver.find_element_by_xpath('//div[@id="gdpr-modal-content"]')
-                self._delete_element(driver, element)
-            except:
-                pass
-
-            element = driver.find_element_by_xpath('//a[@id="earnings"]')
-            self._scroll_to_element(driver, element)
-            element.click()
-
+            element = WebDriverWait(driver, 5).until(
+                EC.presence_of_element_located(
+                    (By.XPATH, '//a[@data-track-link="Earnings Transcripts"]')))
+            element = driver.find_element(By.XPATH, '//a[@data-track-link="Earnings Transcripts"]')
+            driver.execute_script("arguments[0].click();", element)
+            element = WebDriverWait(driver, 5).until(
+                EC.presence_of_element_located(
+                    (By.XPATH, '//button[@data-container-id="earnings-transcript-container"]')))
+            time.sleep(1)
             bool = True
+            previous_length = 0
             while bool:
-                try:
-                    element = driver.find_element_by_xpath('//div[@id="quote_page_earnings_listing"]//button[@id="load-more"]')
-                    self._scroll_to_element(driver, element)
-                    element.click()
-                except:
+                element = driver.find_element(By.XPATH, '//button[@data-container-id="earnings-transcript-container"]')
+                driver.execute_script(
+                    "arguments[0].scrollIntoView({behavior: 'auto', block: 'center', inline: 'center'});", element)
+                element = WebDriverWait(driver, 5).until(
+                    EC.presence_of_element_located((By.XPATH, '//button[@data-container-id="earnings-transcript-container"]')))
+                driver.execute_script("arguments[0].click();", element)
+                element = driver.find_element(By.XPATH, '//button[@data-container-id="earnings-transcript-container"]')
+                driver.execute_script(
+                    "arguments[0].scrollIntoView({behavior: 'auto', block: 'center', inline: 'center'});", element)
+                new_length = len(driver.find_elements(By.XPATH, '//div[@id="earnings-transcript-container"]//a'))
+                if new_length == previous_length:
                     bool = False
-
-            links = [ l.get_attribute('href') for l in driver.find_elements_by_xpath('//div[@id="quote_page_earnings_listing"]//a[@data-id="article-list-hl"]') ]
+                else:
+                    previous_length = new_length
+                    time.sleep(1)
+            links = [l.get_attribute('href') for l in driver.find_elements(By.XPATH, '//div[@id="earnings-transcript-container"]//a')]
             driver.quit()
         except:
             print('Failed..')
@@ -104,12 +105,10 @@ class Earnings(DataBase):
             soup = bs(r.content, 'html5lib')
 
             #date = soup.find('span', class_ = 'article-content').find('span', id = 'date').text
-            text = soup.find('span', class_ = 'article-content').find_all(['h2', 'p'])[3:]
+            text = soup.find('div', class_='content-container').find_all(['h2', 'p'])[3:]
 
-            headings = [ i for i, h in enumerate(text) if '<h2>' in str(h) ]
-
+            headings = [i for i, h in enumerate(text) if '<h2>' in str(h)]
             temp = []
-
             for i in range(1,len(headings)):
                 temp.append( ' \n '.join([ t.text for t in text[headings[i-1]:headings[i]] ]) )
             temp.append( ' \n '.join([ t.text for t in text[headings[-1]:]] ) )
@@ -123,19 +122,19 @@ class Earnings(DataBase):
             date = pattern.search( link )[0]
             temp['date'] = date
 
-            text =  soup.find('span', class_ = 'article-content').find_all('p')[1].text
+            text = soup.find('div', class_='content-container').find_all(['h2', 'p'])[1].text
             if text == 'Image source: The Motley Fool.':
-                text =  soup.find('span', class_ = 'article-content').find_all('p')[2].find('em').text
+                text = soup.find('div', class_='content-container').find_all('p')[2].find('span', id='date').text
                 temp['time'] = text
             else:
                 try:
-                    text =  soup.find('span', class_ = 'article-content').find_all('p')[1].find('em').text
+                    text = soup.find('div', class_='content-container').find_all('p')[2].find('span', id='date').text
                     temp['time'] = text
                 except:
-                    temp['time'] = soup.find('span', class_ = 'article-content').find_all('p')[1].text.split(',')[-1].strip()
+                    temp['time'] = soup.find('div', class_='content-container').find_all('p')[1].text.split(',')[-1].strip()
             #soup.find('span', class_ = 'article-content').find('em', id = 'time').text
 
-            text = soup.find('span', class_ = 'article-content').find_all(['h2', 'p'])[1].text
+            text = soup.find('div', class_='content-container').find_all(['h2', 'p'])[4].text
             if text == 'Image source: The Motley Fool.':
                 text = soup.find('span', class_ = 'article-content').find_all(['h2', 'p'])[2].text
             try:
@@ -146,7 +145,7 @@ class Earnings(DataBase):
                 temp['quarter'] = pattern.search(text)[0].replace(u'\xa0', u' ')
             temp['link'] = link  # need to add this to access in browser?
 
-            df.append( pd.DataFrame( temp, index = [date] ) )
+            df.append(pd.DataFrame(temp, index=[date]))
 
         df = pd.concat(df)
         df.index = pd.to_datetime(df.index)
@@ -163,7 +162,10 @@ class Earnings(DataBase):
     def _scroll_to_element(self, driver, element):
         driver.execute_script("arguments[0].scrollIntoView({behavior: 'auto', block: 'center', inline: 'center'});", element)
 
-# quick test
-# e = Earnings('AAPL')
-#e.head = True
-# e.transcripts()
+if __name__ == '__main__':
+    p = 1
+    # quick test
+    #e = Earnings('AAPL')
+    #e.head = True
+    #e.transcripts()
+    #logging.info(e)

@@ -11,3 +11,4 @@ lxml
 xlrd
 requests_html
 requests
+webdriver-manager

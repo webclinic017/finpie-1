@@ -40,19 +40,20 @@ class CleanNews(DataBase):
         self.dayz = [ 'Today', 'Yesterday' ]
         self.filterz = [ ' ' ]
 
-    def _format_date( self, date ):
+    def _format_date(self, date):
         '''
 
         '''
+        date = pd.to_datetime(date)
         y = str(date.year)
-        if len(str(date.month) ) < 2:
+        if len(str(date.month)) < 2:
             m = '0' + str(date.month)
         else:
             m = str(date.month)
-        if len(str(date.day) ) < 2:
+        if len(str(date.day)) < 2:
             d = '0' + str(date.day)
         else:
-            d =  str(date.day)
+            d = str(date.day)
         return y, m, d
 
     def _clean_dates(self, data):

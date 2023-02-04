@@ -54,10 +54,10 @@ class MwatchData( DataBase ):
             print('Please specify annual or quartlery frequency.')
             return None
         soup = self._get_session(url)
-        df = pd.concat( [ pd.read_html(str(s.find('table')))[0] for s in soup.find_all('div', class_='financials') ] )
+        df = pd.concat([pd.read_html(str(s.find('table')))[0] for s in soup.find_all('div', class_='financials')])
         df = df.astype(str)
-        df.iloc[:,0][ df.iloc[:,0] == 'nan' ]= df[ df.iloc[:,0] == 'nan' ].iloc[:,-1]
-        df = df.iloc[:,:-1]
+        df.iloc[:, 0][df.iloc[:, 0] == 'nan' ] = df[df.iloc[:, 0] == 'nan'].iloc[:, -1]
+        df = df.iloc[:, :-1]
         df = df.transpose()
         df.index.name = 'date'
         df.columns = df.iloc[0]
@@ -65,18 +65,16 @@ class MwatchData( DataBase ):
         df.columns.name = ''
         if self.freq.lower() == 'quarterly' or self.freq.lower() == 'q':
             df.index = pd.to_datetime(df.index)
-        df.replace('-', np.nan, inplace = True)
-        df.replace('\(', '-', regex = True, inplace = True)
-        df.replace('\)', '', regex = True, inplace = True)
+        df.replace('-', np.nan, inplace=True)
+        df.replace('\(', '-', regex=True, inplace=True)
+        df.replace('\)', '', regex=True, inplace=True)
         # rename duplicate columns
-        columns = pd.io.parsers.ParserBase({'names':df.columns})._maybe_dedup_names(df.columns)
-        df.columns = [ str(col).replace('\xa0', ' ') for col in columns ]
+        df.columns = [col.split('  ')[0] for col in df.columns]
+        df.columns = [str(col).replace('\xa0', ' ') for col in df.columns]
         df = df.astype('str')
-
-        df.replace(',', '', regex = True, inplace = True)
-        df.columns = [ col.split(' ', 1)[0].replace(' ', '_').replace('/','_').replace('.', '').replace(',', '').replace('&', 'and').lower() for col in df.columns ]
-        return self._col_to_float( df )
-
+        df.replace(',', '', regex=True, inplace=True)
+        df.columns = [col.split(' ', 1)[0].replace(' ', '_').replace('/','_').replace('.', '').replace(',', '').replace('&', 'and').lower() for col in df.columns]
+        return self._col_to_float(df)
 
     def income_statement(self):
         '''
@@ -106,3 +104,10 @@ class MwatchData( DataBase ):
         balance_sheet = self.balance_sheet()
         cashflow_statement = self.cashflow_statement()
         return income_statement, balance_sheet, cashflow_statement
+
+
+if __name__ == '__main__':
+    p = 1
+    # quick test
+    #mw = MwatchData('AAPL')
+    #mw.balance_sheet()

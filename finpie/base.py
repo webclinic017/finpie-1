@@ -33,47 +33,27 @@ import pandas as pd
 from selenium import webdriver
 from bs4 import BeautifulSoup as bs
 from requests_html import HTMLSession
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service as ChromeService
 
 
 class DataBase(object):
 	def __init__(self):
 		self.head = False
 		self.download_path = os.getcwd()
-		self.chromedriver_path = os.path.dirname(__file__)
 
-	def _get_chromedriver_path(self):
+	def _load_driver(self, caps='none', accept_insecure=False):
+		'''
 
-		filepath = self.chromedriver_path
-		if '/' in filepath:
-			filepath = '/'.join( filepath.split('/')) + '/webdrivers/'
-		elif '\\' in filepath:
-			filepath = '\\'.join( filepath.split('\\')) + '\\webdrivers\\'
-		return filepath
-
-
-	def _get_chromedriver(self):
-
-		filepath = self._get_chromedriver_path()
-		if sys.platform == 'darwin':
-			return filepath + 'chromedriver_mac'
-		elif 'win' in sys.platform:
-			return filepath + 'chromedriver_windows.exe'
-		elif 'linux' in sys.platform:
-			return filepath + 'chromedriver_linux'
-
-
-	def _load_driver(self, caps = 'none', accept_insecure = False):
-
+		'''
 		options = webdriver.ChromeOptions()
 		prefs = {}
 		prefs['profile.default_content_settings.popups'] = 0
 		prefs['download.default_directory'] = self.download_path
-		prefs['profile.default_content_setting_values.automatic_downloads'] =  1
+		prefs['profile.default_content_setting_values.automatic_downloads'] = 1
 		options.add_experimental_option('prefs', prefs)
 		options.add_experimental_option("excludeSwitches", ['enable-automation'])
 		options.add_experimental_option('useAutomationExtension', False)
-
 		options.add_argument('--no-sandbox')
 		options.add_argument('--disable-setuid-sandbox')
 		options.add_argument('--disable-gpu')
@@ -83,11 +63,13 @@ class DataBase(object):
 			options.add_argument('--ignore-ssl-errors=yes')
 			options.add_argument('--ignore-certificate-errors')
 
-		user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.53 Safari/537.36'
-		options.add_argument(f'user-agent={user_agent}')
+		# to be deleted?
+		#user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.53 Safari/537.36'
+		#options.add_argument(f'user-agent={user_agent}')
 
 		if not self.head:
 			options.add_argument('--headless')
+		''' to be deleted?
 		try:
 			if caps == 'none':
 				caps = DesiredCapabilities().CHROME
@@ -108,12 +90,17 @@ class DataBase(object):
 			print('Failed to start driver: ' + str(e) )
 			if 'chrome not reachable' in str(e):
 				print('Try turning off your firewall...')
+		'''
+		driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
+		driver.set_window_size(1400, 1000)
+		driver.set_page_load_timeout(600)
+		driver.delete_all_cookies()
 
 		return driver
 
 	def _get_session(self, url):
 		'''
-		...
+
 		'''
 		session = HTMLSession()
 		r = session.get(url)
@@ -130,7 +117,6 @@ class DataBase(object):
 		while bool:
 			if filename not in os.listdir(self.download_path):
 				time.sleep(0.5)
-				#self._downloads_done(filename)
 			else:
 				bool = False
 		return None
@@ -151,8 +137,7 @@ class DataBase(object):
 
 		return df
 
-
-	def _load_zip_file(self, url, text_file_index = 0):
+	def _load_zip_file(self, url, text_file_index=0):
 	    r = requests.get(url, stream=True)
 	    #pd.read_csv(z.open(zipfile.ZipFile.namelist(z)[0]), header = None)
 	    z = zipfile.ZipFile(io.BytesIO(r.content), 'r')
