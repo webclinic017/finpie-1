@@ -23,19 +23,10 @@
 # SOFTWARE.
 #
 
-import re
-import time
-import random
-import numpy as np
-import pandas as pd
-import datetime as dt
-from bs4 import BeautifulSoup as bs
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.support import expected_conditions as EC
 from finpie.news_data.clean_news import CleanNews
-
+from finpie.news_data.ft_news import FTNews
+from finpie.news_data.wsj_news import WSJNews
+from finpie.news_data.cnbc_news import CNBCNews
 
 class NewsData(CleanNews):
     def __init__(self, ticker, keywords, head=False, verbose=False):
@@ -43,63 +34,26 @@ class NewsData(CleanNews):
         self.ticker = ticker
         self.keywords = keywords
         self.verbose = verbose
-        # news.datestop = False
+        self.head = head
 
-    def ft( self, datestop=False ):
-        '''
+    def ft(self, datestop=False):
 
-        '''
+        newsClass = FTNews(self.ticker, self.keywords, self.head, verbose=self.verbose)
+        data = newsClass.ft(datestop)
 
-        data = self._clean_dates(data)
-        # write to parquet file with ticker as partition
-
-        if self.verbose:
-            print('-' * 78)
-            print(source.upper(), 'done.', len(data), 'articles collected.')
-            print('-' * 78)
         return data
 
     def wsj( self, datestop=False ):
 
-        data = self._clean_dates(data)
-        # write to parquet file with ticker as partition
-
-        if self.verbose:
-            print('-' * 78)
-            print(source.upper(), 'done.', len(data), 'articles collected.')
-            print('-' * 78)
-
-        return data
-
-    def seeking_alpha(self, datestop=False, press_releases=False):
-
-        data = self._clean_dates(data)
-
-        if self.verbose:
-            print('-' * 78)
-            print(source.upper(), 'done.', len(data), 'articles collected.')
-            print('-' * 78)
-
+        newsClass = WSJNews(self.ticker, self.keywords, self.head, verbose=self.verbose)
+        data = newsClass.wsj(datestop)
         return data
 
     def cnbc(self, datestop=False):
 
-        data = self._clean_dates(data)
-
-        if self.verbose:
-            print('-' * 78)
-            print(source.upper(), 'done.', len(data), 'articles collected.')
-            print('-' * 78)
-
+        newsClass = CNBCNews(self.ticker, self.keywords, self.head, verbose=self.verbose)
+        data = newsClass.cnbc(datestop)
         return data
 
-    def nyt(self, datestop=False):
-
-        data = self._clean_dates(data)
-
-        if self.verbose:
-            print('-' * 78)
-            print(source.upper(), 'done.', len(data), 'articles collected.')
-            print('-' * 78)
-
-        return data
+if __name__ == '__main__':
+    p = 1

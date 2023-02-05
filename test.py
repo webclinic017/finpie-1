@@ -193,45 +193,12 @@ class NewsDataTest(unittest.TestCase, CommonTest):
     def setUp(self):
         warnings.simplefilter("ignore", ResourceWarning)
 
-        from pandas.core.common import SettingWithCopyWarning
-        warnings.simplefilter(action="ignore", category=SettingWithCopyWarning)
-
-    def test_nyt(self):
-        print('Testing NYT.')
-        data = self.news.nyt( datestop = self.date )
-        self.df_helper(data)
-        self.assertTrue( self.date2 in pd.date_range( data.index[-1].strftime('%Y-%m-%d'), data.index[0].strftime('%Y-%m-%d') ) )
-        print('Test passed. \n')
-
-    def test_seeking_alpha(self):
-        print('Testing Seeking Alpha.')
-        data = self.news.seeking_alpha( datestop = self.date )
-        if type(data) != type(None):
-            self.df_helper(data)
-            self.assertTrue( self.date2 in pd.date_range( data.index[-1].strftime('%Y-%m-%d'), data.index[0].strftime('%Y-%m-%d') ) )
-            print('Test passed. \n')
-        else:
-            print('Retrying.. \n')
-            data = self.news.seeking_alpha( datestop = self.date )
-            self.df_helper(data)
-            self.assertTrue( self.date2 in pd.date_range( data.index[-1].strftime('%Y-%m-%d'), data.index[0].strftime('%Y-%m-%d') ) )
-            print('Test passed. \n')
-
-
-    '''def test_reuters(self):
-        print('Testing Reuters.')
-        data = self.news.reuters( datestop = self.date )
-        self.df_helper(data)
-        self.assertTrue( self.date2 in pd.date_range( data.index[-1].strftime('%Y-%m-%d'), data.index[0].strftime('%Y-%m-%d') ) )
-        print('Test passed.')'''
-
     def test_cnbc(self):
         print('Testing CNBC.')
         data = self.news.cnbc( datestop = self.date )
         self.df_helper(data)
         self.assertTrue( self.date2 in pd.date_range( data.index[-1].strftime('%Y-%m-%d'), data.index[0].strftime('%Y-%m-%d') ) )
         print('Test passed. \n')
-
 
     def test_wsj(self):
         print('Testing WSJ.')
@@ -247,7 +214,6 @@ class NewsDataTest(unittest.TestCase, CommonTest):
             self.assertTrue( self.date2 in pd.date_range( data.index[-1].strftime('%Y-%m-%d'), data.index[0].strftime('%Y-%m-%d') ) )
             print('Test passed. \n')
 
-
     def test_ft(self):
         print('Testing FT.')
         data = self.news.ft( datestop = self.date )
@@ -258,18 +224,3 @@ class NewsDataTest(unittest.TestCase, CommonTest):
 
 if __name__ == '__main__':
     unittest.main()
-
-#ticker = 'AAPL'
-#name = 'Macrotrends fundamentals'
-#cl = finpie.fundamental_data.MacrotrendsData(ticker)
-#cl.head = True
-#for func in dir(cl):
-#    if callable(getattr(cl, func)) and '_' != func[0]:
-#        print( f'Testing {name} {func}' )
-#        data = getattr(cl, func)()
-#        print(data.head())
-
-#date = '2020-11-03'
-#n = finpie.NewsData('XOM', 'exxon oil')
-#n = finpie.NewsData('NFLX', 'netflix nflx')
-#n.cnbc(datestop = date)

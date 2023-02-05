@@ -84,4 +84,5 @@ class FinvizData(DataBase):
         df.index.name = 'date'
         return self._col_to_float(df)
 
-    
+if __name__ == '__main__':
+    p = 1

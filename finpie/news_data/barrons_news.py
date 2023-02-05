@@ -10,11 +10,11 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
 from finpie.news_data.clean_news import CleanNews
-from finpie.news_data.news import NewsData
+from finpie.news_data.news import CleanNews
 
-class BarronsNews(NewsData):
+class BarronsNews(CleanNews):
     def __init__(self, ticker, keywords, head=False, verbose=False):
-        NewsData.__init__(self, ticker, keywords, head, verbose)
+        CleanNews.__init__(self, ticker, keywords, head, verbose)
         self.ticker = ticker
         self.keywords = keywords
         self.verbose = verbose

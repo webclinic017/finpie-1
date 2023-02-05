@@ -1,24 +1,46 @@
-import re
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# finpie - a simple library to download some financial data
+# https://github.com/peterlacour/finpie
+#
+# Copyright (c) 2023 Peter la Cour
+#
+# Licensed under the MIT License
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+
 import time
-import random
 import numpy as np
 import pandas as pd
 import datetime as dt
 from bs4 import BeautifulSoup as bs
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
-from finpie.news_data.clean_news import CleanNews
-from finpie.news_data.news import NewsData
+from finpie.news_data.news import CleanNews
 
-class FTNews(NewsData):
+class FTNews(CleanNews):
     def __init__(self, ticker, keywords, head=False, verbose=False):
-        NewsData.__init__(self, ticker, keywords, head, verbose)
+        CleanNews.__init__(self)
         self.ticker = ticker
         self.keywords = keywords
         self.verbose = verbose
         self.head = head
+
     def ft(self, datestop=False):
         '''
         
@@ -49,18 +71,16 @@ class FTNews(NewsData):
             max_articles = np.ceil(int(driver.find_element(By.XPATH, '//h2[@class="o-teaser-collection__heading o-teaser-collection__heading--half-width"]').text.split('of ')[-1].strip()) / 25)
             while co < int(max_articles):
                 try:
-                    max = int( driver.find_element(By.XPATH, '//span[@class="search-pagination__page"]').text.replace('Page 1 of ', '') )
+                    max = int(driver.find_element(By.XPATH, '//span[@class="search-pagination__page"]').text.replace('Page 1 of ', '') )
                     for i in range(max):
                         driver.find_element(By.XPATH, '//a[@class="search-pagination__next-page o-buttons o-buttons--secondary o-buttons-icon o-buttons-icon--arrow-right o-buttons--big o-buttons-icon--icon-only"]').click()
                         element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//head')))
                         self._delete_elements(driver)
                         contents.append(bs(driver.page_source, "lxml").find_all('div', class_='o-teaser__content'))
                         co += 1
-    
                         dte = driver.find_elements(By.XPATH, '//div[@class="o-teaser__timestamp"]')[-1].text
-    
                         if datestop:
-                            if pd.to_datetime( dte ) < pd.to_datetime(datestop):
+                            if pd.to_datetime(dte) < pd.to_datetime(datestop):
                                 co = int(max_articles) + 10
                                 break
                 except:
@@ -78,18 +98,16 @@ class FTNews(NewsData):
                             d = str(d)
     
                         dte = pd.to_datetime(d + ' ' + m.capitalize() + ' ' + y) + dt.timedelta(1)
-    
                         if datestop:
                             if dte < pd.to_datetime(datestop):
                                 co = int(max_articles) + 10
-    
                         y, m, d = self._format_date(dte)
                         url = 'https://www.ft.com/search?q=' + self.keywords.replace(' ', '%20') + '&dateTo=' + y + '-' + m + '-' + d + '&sort=date&expandRefinements=true'
                         driver.get(url)
                         # driver.find_elements(By.XPATH, '//a[@data-trackable="sort-item"]')[1].click()
                         element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//head')))
                         self._delete_elements(driver)
-                        contents.append( bs( driver.page_source, "lxml" ).find_all('div', class_ = 'o-teaser__content' ) )
+                        contents.append(bs(driver.page_source, "lxml" ).find_all('div', class_ = 'o-teaser__content' ) )
                         co += 1
                     except:
                         break
@@ -121,7 +139,7 @@ class FTNews(NewsData):
         data['newspaper'] = 'FT'
         data['search_term'] = self.keywords
         data['id'] = data['newspaper'] +  data['headline'] + data['link']
-        columns = [ 'link', 'headline', 'date', 'description', 'date_retrieved', 'author', 'tag', 'newspaper', 'comments', 'ticker', 'search_term', 'id' ]
+        columns = ['link', 'headline', 'date', 'description', 'date_retrieved', 'author', 'tag', 'newspaper', 'comments', 'ticker', 'search_term', 'id' ]
         for col in columns:
             if col not in data.columns:
                 data[col] = 'nan'
@@ -131,8 +149,6 @@ class FTNews(NewsData):
         data.index = pd.to_datetime(data.date)
         data.index.name = 'date'
         data.drop('date', axis=1, inplace=True)
-        # write to parquet file with ticker as partition
-    
         if self.verbose:
             print('-' * 78)
             print(source.upper(), 'done.', len(data), 'articles collected.')
@@ -198,5 +214,5 @@ class FTNews(NewsData):
 if __name__ == '__main__':
     p = 1
     # quick test
-    #ft = FTNews('AAPL', 'AAPL')
-    #print(ft.ft())
+    ft = FTNews('XOM', 'exxon oil')
+    print(ft.ft(datestop='2022-12-01'))

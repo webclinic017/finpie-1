@@ -12,3 +12,4 @@ xlrd
 requests_html
 requests
 webdriver-manager
+dateparser

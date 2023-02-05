@@ -110,13 +110,14 @@ def cftc( report_type = 'futures_traders', year = 2000 ):
 
     return df
 
-
-'''
-# quick test
-prod = 'futures'
-year = 2020
-df = cftc(prod, year)
-df.head()
-
-df = cftc()
-'''
+if __name__ == '__main__':
+    p = 1
+    '''
+    # quick test
+    prod = 'futures'
+    year = 2020
+    df = cftc(prod, year)
+    df.head()
+    
+    df = cftc()
+    '''

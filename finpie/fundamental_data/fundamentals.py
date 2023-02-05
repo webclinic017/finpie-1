@@ -68,3 +68,6 @@ def Fundamentals( ticker, source = 'macrotrends', freq = 'A', countryCode = '' )
         return FundamentalsClassB(ticker, freq)
     elif source == 'marketwatch':
         return FundamentalsClassC(ticker, freq, countryCode)
+
+if __name__ == '__main__':
+    p = 1

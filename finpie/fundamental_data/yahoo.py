@@ -324,34 +324,5 @@ class YahooData( DataBase ):
        return df
 
 
-
-'''
-
-def valuation_metrics(self):
-
-
-    url = f'https://finance.yahoo.com/quote/{self.ticker}/key-statistics?p={self.ticker}'
-    soup = self._get_session(url)
-    df = pd.read_html( str(soup.find('table')) )[0].transpose()
-    df.reset_index(inplace = True)
-    df.columns = ['Date'] + [c[:-1].strip().replace(' ', '_').replace('/', '')
-                    if c.strip()[-1].isdigit() else c.strip().replace(' ', '_').replace('/', '')
-                        for c in df.iloc[0][1:].values.tolist()]
-    df = df[1:]
-
-    df = self._col_to_float(df)
-
-    df.replace(',', '', regex = True, inplace = True)
-    df.replace('-', np.nan, regex = True, inplace = True)
-
-    #df[df.columns[1:]] = df[df.columns[1:]].astype('float')
-    df.replace('Current', '', regex = True, inplace = True) # replace as of date as well ?
-    df.replace(',', '', regex = True, inplace = True)
-
-    df['ticker'] = self.ticker
-
-    df.columns = [ col.replace(' ', '_').replace('/','_').replace('.', '').replace(',', '').replace('&', 'and').lower() for col in df.columns ]
-
-    return self._col_to_float(df)
-
-'''
+if __name__ == '__main__':
+    p = 1
