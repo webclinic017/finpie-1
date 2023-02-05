@@ -2,6 +2,6 @@
 *.iml
 out
 gen
-./finpie/news_data/barrons_news.py
-./finpie/news_data/seeking_alpha_news.py
-./finpie/news_data/nyt_news.py
+*/finpie/news_data/barrons_news.py
+*/finpie/news_data/seeking_alpha_news.py
+*/finpie/news_data/nyt_news.py
