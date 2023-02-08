@@ -225,12 +225,12 @@ def _download_prices(date):
 
 if __name__ == '__main__':
     p = 1
-    startdate = '2023-01-01'
-    enddate = '2023-02-08'
-    d_range = pd.date_range(startdate, enddate)
+    #startdate = '2023-01-01'
+    #enddate = '2023-02-08'
+    #d_range = pd.date_range(startdate, enddate)
     '''    dfs = []
     for d in d_range:
         df = _download_prices(d)
         dfs = dfs.append(df)
         print(d)'''
-    df = historical_futures_contracts(d_range)
+    #df = historical_futures_contracts(d_range)

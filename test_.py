@@ -11,7 +11,7 @@ class CommonTest(object):
         # test ticker
         self.ticker = 'AAPL'
         self.date = '2022-12-03'
-        self.date2 = '2022-12-11'
+        self.date2 = '2023-01-31'
 
     def df_helper(self, data):
         # simple test to see if dataframe is returned

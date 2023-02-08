@@ -215,6 +215,6 @@ class WSJNews(CleanNews):
 if __name__ == '__main__':
     p = 1
     # quick test
-    wsj = WSJNews('AAPL', 'AAPL')
-    data = wsj.wsj(datestop='2022-12-01')
-    print(data)
+    #wsj = WSJNews('AAPL', 'AAPL')
+    #data = wsj.wsj(datestop='2022-12-01')
+    #print(data)

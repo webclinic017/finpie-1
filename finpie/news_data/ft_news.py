@@ -217,5 +217,5 @@ class FTNews(CleanNews):
 if __name__ == '__main__':
     p = 1
     # quick test
-    ft = FTNews('XOM', 'exxon oil')
-    print(ft.ft(datestop='2022-12-01'))
+    #ft = FTNews('XOM', 'exxon oil')
+    #print(ft.ft(datestop='2022-12-01'))

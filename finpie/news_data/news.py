@@ -43,7 +43,7 @@ class NewsData(CleanNews):
 
         return data
 
-    def wsj( self, datestop=False ):
+    def wsj( self, datestop=False):
 
         newsClass = WSJNews(self.ticker, self.keywords, self.head, verbose=self.verbose)
         data = newsClass.wsj(datestop)
@@ -57,3 +57,6 @@ class NewsData(CleanNews):
 
 if __name__ == '__main__':
     p = 1
+    news = NewsData('XOM', 'exxon oil')
+    data = news.wsj(datestop='2022-12-01')
+    print(data)
