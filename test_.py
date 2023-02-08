@@ -21,13 +21,6 @@ class CommonTest(object):
         # check dataframe length
         self.assertTrue( len(data) > 0 )
 
-    # def test_tingo_prices(self)
-
-    # def test_iex_intraday_prices(self)
-
-    # def test_alpha_vantage_prices(self)
-
-
 class FundamentalDataTest(unittest.TestCase, CommonTest):
 
     def __init__(self, *args, **kwargs):
