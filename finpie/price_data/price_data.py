@@ -145,7 +145,7 @@ def historical_futures_contracts(date_range):
     with ThreadPoolExecutor(4) as pool:
         res = list(tqdm( pool.map(_download_prices, date_range), total=len(date_range)))
     df_out = pd.concat([i for i in res if type(i) != type([0]) ], axis=0)
-    df_out.index.name = 'date'
+    #df_out.index.name = 'date'
     return df_out
 
 
