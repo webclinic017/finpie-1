@@ -10,8 +10,8 @@ class CommonTest(object):
     def __init__(self):
         # test ticker
         self.ticker = 'AAPL'
-        self.date = '2022-02-03'
-        self.date2 = '2022-03-11'
+        self.date = '2022-09-03'
+        self.date2 = '2022-12-11'
 
     def df_helper(self, data):
         # simple test to see if dataframe is returned
@@ -202,7 +202,7 @@ class NewsDataTest(unittest.TestCase, CommonTest):
             print('Test passed. \n')
         else:
             print('Retrying.. \n')
-            data = self.news.seeking_alpha( datestop = self.date )
+            data = self.news.wsj( datestop = self.date )
             self.df_helper(data)
             self.assertTrue( self.date2 in pd.date_range( data.index[-1].strftime('%Y-%m-%d'), data.index[0].strftime('%Y-%m-%d') ) )
             print('Test passed. \n')

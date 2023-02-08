@@ -10,4 +10,3 @@ requests_html
 requests
 webdriver-manager
 dateparser
-pytest
