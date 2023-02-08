@@ -192,20 +192,6 @@ class NewsDataTest(unittest.TestCase, CommonTest):
         self.assertTrue( self.date2 in pd.date_range( data.index[-1].strftime('%Y-%m-%d'), data.index[0].strftime('%Y-%m-%d') ) )
         print('Test passed. \n')
 
-    def test_wsj(self):
-        print('Testing WSJ.')
-        data = self.news.wsj( datestop = self.date )
-        if type(data) != type(None):
-            self.df_helper(data)
-            self.assertTrue( self.date2 in pd.date_range( data.index[-1].strftime('%Y-%m-%d'), data.index[0].strftime('%Y-%m-%d') ) )
-            print('Test passed. \n')
-        else:
-            print('Retrying.. \n')
-            data = self.news.wsj( datestop = self.date )
-            self.df_helper(data)
-            self.assertTrue( self.date2 in pd.date_range( data.index[-1].strftime('%Y-%m-%d'), data.index[0].strftime('%Y-%m-%d') ) )
-            print('Test passed. \n')
-
     def test_ft(self):
         print('Testing FT.')
         data = self.news.ft( datestop = self.date )

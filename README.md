@@ -1291,7 +1291,7 @@ futures_prices('2020-01-06')
 
 <div align="right"><a href="#0">Back to top</a> </div>
 
-The functions below retrieve news headlines based on keyword searches from <code>Barrons</code>, <code>CNBC</code>, the <code>Financial Times</code>, the <code>New York Times</code>, <code>Reuters</code>, <code>Seeking Alpha</code> and the <code>Wall Street Journal</code>. The keyword for Seeking Alpha is simply the relevant stock ticker.
+The functions below retrieve news headlines based on keyword searches from <code>CNBC</code>, the <code>Financial Times</code> and the <code>Wall Street Journal</code>.
 
 
 The scrape is based on Selenium and may not be very stable if the website layouts change.
@@ -1311,43 +1311,6 @@ news.verbose = True # default = False, prints total number of collected articles
 <br>
 
 -----
-
-#### <div id = "f78" ><i>NewsData(ticker, keywords).barrons()</i></div>
-
-<ul>
-<li>Returns the news headlines from Barrons.com for the specified keywords.</li>
-</ul>
-
-<details>
-<summary><i> Example </i></summary>
-
-```python
-# retrieve news article for a given search term
-news = NewsData('XOM', 'exxon mobil')
-df = news.barrons(datestop = '2020-06-01')
-# filter news headlines with a keyword list
-news.filterz = [ 'exxon', 'mobil', 'oil', 'energy' ]
-df = news.filter_data(df)
-```
-
-<center><small><small>
-
-| date       | link                                                                                                           | headline                                                                      | description                                                                                                                                                                                                   | newspaper   | author                  | date_retrieved             | ticker   |   comments |   tag | search_term   | id                                                                                                                                                                                                | source   |
-|:-----------|:---------------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:------------|:------------------------|:---------------------------|:---------|-----------:|------:|:--------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------|
-| 15/09/2020 | https://www.barrons.com/articles/options-traders-are-pricing-in-an-exxon-dividend-cut-analyst-says-51600181938 | Options Traders Are Pricing In an Exxon Dividend Cut, Analyst Says            | Whether Exxon can maintain its dividend is one of the most active debates right now among energy investors. The company has a strong incentive to keep making payments at current levels.                     | Barrons.com | Avi Salzman             | 2020-09-16 13:35:26.574289 | XOM      |        nan |   nan | exxon mobil   | Barrons.comOptions Traders Are Pricing In an Exxon Dividend Cut, Analyst Sayshttps://www.barrons.com/articles/options-traders-are-pricing-in-an-exxon-dividend-cut-analyst-says-51600181938       | barrons  |
-| 13/09/2020 | https://www.wsj.com/articles/exxon-used-to-be-americas-most-valuable-company-what-happened-oil-gas-11600037243 | Exxon Used to Be America’s Most Valuable Company. What Happened?              | The oil giant doubled down on oil and gas at what now looks to be the worst possible time. Investors are fleeing and workers are grumbling about the direction of a company some see as out of touch.         | WSJ.com     | Christopher M. Matthews | 2020-09-16 13:35:26.574289 | XOM      |        nan |   nan | exxon mobil   | WSJ.comExxon Used to Be America’s Most Valuable Company. What Happened?https://www.wsj.com/articles/exxon-used-to-be-americas-most-valuable-company-what-happened-oil-gas-11600037243             | barrons  |
-| 11/09/2020 | https://www.barrons.com/articles/where-to-find-bargains-in-oil-stocks-51599837910                              | Where to Find Bargains in Oil Stocks Now                                      | Goldman Sachs analyst likes certain refiners and Canadian oil companies.                                                                                                                                      | Barrons.com | Avi Salzman             | 2020-09-16 13:35:26.574289 | XOM      |        nan |   nan | exxon mobil   | Barrons.comWhere to Find Bargains in Oil Stocks Nowhttps://www.barrons.com/articles/where-to-find-bargains-in-oil-stocks-51599837910                                                              | barrons  |
-|...|...|...|...|...|...|...|...|...|...|...|...|...|...|...|
-
-
-</small></small></center>
-
-</details>
-
-<div align = "right">  <a href="#i78">To index</a> </div>
-
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-
 
 #### <div id = "f80" ><i>NewsData(ticker, keywords).cnbc()</i></div>
 
@@ -1422,80 +1385,6 @@ df = news.filter_data(df)
 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-
-#### <div id = "f82" ><i>NewsData(ticker, keywords).nyt()</i></div>
-
-<ul>
-<li>Returns the news headlines from the New York Times for the specified keywords.</li>
-</ul>
-
-<details>
-<summary><i> Example </i></summary>
-
-```python
-# retrieve news article for a given search term
-news = NewsData('XOM', 'exxon mobil')
-df = news.nyt(datestop = '2020-06-01')
-# filter news headlines with a keyword list
-news.filterz = [ 'exxon', 'mobil', 'oil', 'energy' ]
-df = news.filter_data(df)
-```
-
-<center><small><small>
-
-| date                | link                                                                                                  | headline                                                                       | description                                                                                                                                                                                                                                                             | tag      | author               |   comments | date_retrieved             | ticker   | newspaper   | search_term   | id                                                                                                                                                                                 | source   |
-|:--------------------|:------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------|:---------------------|-----------:|:---------------------------|:---------|:------------|:--------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------|
-| 2020-09-08 00:00:00 | /aponline/2020/09/08/business/ap-financial-markets-stocks.html?searchResultPosition=2                 | Exxon, Tesla Fall; Nikola, Beyond Meat Rise                                    | Stocks that moved heavily or traded substantially Tuesday:                                                                                                                                                                                                              | Business | The Associated Press |        nan | 2020-09-16 14:22:13.032245 | XOM      | NYT         | exxon mobil   | NYTExxon, Tesla Fall; Nikola, Beyond Meat Rise/aponline/2020/09/08/business/ap-financial-markets-stocks.html?searchResultPosition=2                                                | nyt      |
-| 2020-09-08 00:00:00 | /reuters/2020/09/08/business/08reuters-exxon-mobil-spending-exclusive.html?searchResultPosition=3     | Exclusive: Exxon Downsizes Global Empire as Wall Street Worries About Dividend | Ill-timed bets on rising demand have Exxon Mobil Corp facing a shortfall of about $48 billion through 2021, according to a Reuters tally and Wall Street estimates, a situation that will require the top U.S. oil company to make deep cuts to its staff and projects. | Business | Reuters              |        nan | 2020-09-16 14:22:13.032245 | XOM      | NYT         | exxon mobil   | NYTExclusive: Exxon Downsizes Global Empire as Wall Street Worries About Dividend/reuters/2020/09/08/business/08reuters-exxon-mobil-spending-exclusive.html?searchResultPosition=3 | nyt      |
-| 2020-09-03 00:00:00 | /reuters/2020/09/03/business/03reuters-refinery-operations-exxon-beaumont.html?searchResultPosition=4 | Exxon Beaumont, Texas, Refinery Restarts Large Crude Unit: Sources             | Exxon Mobil Corp restarted the large crude distillation unit (CDU) at its 369,024 barrel-per-day (bpd) Beaumont, Texas, refinery on Thursday, said sources familiar with plant operations.                                                                              | Business | Reuters              |        nan | 2020-09-16 14:22:13.032245 | XOM      | NYT         | exxon mobil   | NYTExxon Beaumont, Texas, Refinery Restarts Large Crude Unit: Sources/reuters/2020/09/03/business/03reuters-refinery-operations-exxon-beaumont.html?searchResultPosition=4         | nyt      |
-|...|...|...|...|...|...|...|...|...|...|...|...|...|...|...|
-
-
-</small></small></center>
-
-</details>
-
-<div align = "right">  <a href="#i82">To index</a> </div>
-
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-
-
-#### <div id = "f84" ><i>NewsData(ticker, keywords).seeking\_alpha(datestop, press_releases = False)</i></div>
-
-<ul>
-<li>Returns the news headlines from Seeking Alpha for the specified keywords.</li>
-<li>It can happen that access to SeekingAlpha requires to solve a captcha by pressing and holding a button when run for the first time in a program. Will try to fix this in future versions. <code>press_releases = True</code> will get press releases instead of news headlines.</li>
-</ul>
-
-<details>
-<summary><i> Example </i></summary>
-
-```python
-# retrieve news article for a given search term
-news = NewsData('XOM', 'exxon mobil')
-df = news.seeking_alpha(datestop = '2020-06-01')
-# filter news headlines with a keyword list
-news.filterz = [ 'exxon', 'mobil', 'oil', 'energy' ]
-df = news.filter_data(df)
-```
-
-<center><small><small>
-
-| date                | link                                                                                                                                                                                         | headline                                                    | author   | comments   | date_retrieved             | ticker   |   description |   tag | newspaper   | search_term   | id                                                                                                                                                                                                                                                               | source   |
-|:--------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:------------------------------------------------------------|:---------|:-----------|:---------------------------|:---------|--------------:|------:|:------------|:--------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------|
-| 2020-09-15 00:00:00 | /news/3614409-options-traders-pricing-in-exxon-dividend-cut-analyst-says?source=content_type:react\|section:News\|sectionAsset:News\|first\_level\_url:symbol\|button:Author\|lock\_status:No\|line:1 | Options traders pricing in Exxon dividend cut, analyst says | SA News  | 0 comments | 2020-09-16 15:14:23.575898 | XOM      |           nan |   nan | SA - News   | exxon mobil   | SA - NewsOptions traders pricing in Exxon dividend cut, analyst says/news/3614409-options-traders-pricing-in-exxon-dividend-cut-analyst-says?source=content_type:react\|section:News\|sectionAsset:News\|first\_level\_url:symbol\|button:Author\|lock\_status:No\|line:1 | sa       |
-| 2020-09-14 00:00:00 | /news/3613801-connecticut-latest-state-to-sue-exxon-over-climate-change?source=content_type:react\|section:News\|sectionAsset:News\|first\_level\_url:symbol\|button:Author\|lock\_status:No\|line:2  | Connecticut latest state to sue Exxon over climate change   | SA News  | 0 comments | 2020-09-16 15:14:23.575898 | XOM      |           nan |   nan | SA - News   | exxon mobil   | SA - NewsConnecticut latest state to sue Exxon over climate change/news/3613801-connecticut-latest-state-to-sue-exxon-over-climate-change?source=content_type:react\|section:News\|sectionAsset:News\|first\_level\_url:symbol\|button:Author\|lock\_status:No\|line:2 | sa       |
-| 2020-09-10 00:00:00 | /news/3612953-exxon-rated-new-buy-mkm-shares-slip?source=content_type:react\|section:News\|sectionAsset:News\|first\_level\_url:symbol\|button:Author\|lock\_status:No\|line:3                         | Exxon rated new Buy at MKM but shares slip                  | SA News  | 0 comments | 2020-09-16 15:14:23.575898 | XOM      |           nan |   nan | SA - News   | exxon mobil   | SA - NewsExxon rated new Buy at MKM but shares slip/news/3612953-exxon-rated-new-buy-mkm-shares-slip?source=content_type:react|section:News|sectionAsset:News|first_level_url:symbol|button:Author|lock_status:No|line:3                                         | sa       |
-|...|...|...|...|...|...|...|...|...|...|...|...|...|...|...|
-
-
-</small></small></center>
-
-</details>
-
-<div align = "right">  <a href="#i84">To index</a> </div>
-
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
 #### <div id = "f85" ><i>NewsData(ticker, keywords).wsj()</i></div>
 

@@ -151,7 +151,7 @@ def historical_futures_contracts(date_range):
 
 def futures_contracts(date):
     df = _download_prices(date)
-    df.index.name = 'date'
+    #df.index.name = 'date'
     return df
 
 def _calc_32(l):
@@ -218,9 +218,6 @@ def _download_prices(date):
     out = out[~out.change_in_oi.str.contains("Weekly", na=False)]
     out.loc[:, cols] = out.loc[:, cols].values.astype('float')
     return out
-
-
-
 
 
 if __name__ == '__main__':

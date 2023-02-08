@@ -43,12 +43,12 @@ class NewsData(CleanNews):
 
         return data
 
-    def wsj( self, datestop=False):
+    '''    def wsj( self, datestop=False):
 
         newsClass = WSJNews(self.ticker, self.keywords, self.head, verbose=self.verbose)
         data = newsClass.wsj(datestop)
         return data
-
+    '''
     def cnbc(self, datestop=False):
 
         newsClass = CNBCNews(self.ticker, self.keywords, self.head, verbose=self.verbose)
