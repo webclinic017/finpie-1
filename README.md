@@ -1,5 +1,5 @@
 
-[![Build Status](https://travis-ci.org/peterlacour/finpie.svg?branch=master)](https://travis-ci.org/peterlacour/finpie) [![PyPi](https://img.shields.io/pypi/v/finpie)](https://pypi.org/project/finpie/) [![Status](https://img.shields.io/badge/status-work%20in%20progress-yellow)]()
+[![Run tests](https://github.com/peterlacour/finpie/actions/workflows/tests.yml/badge.svg)](https://github.com/peterlacour/finpie/actions/workflows/tests.yml) [![PyPi](https://img.shields.io/pypi/v/finpie)](https://pypi.org/project/finpie/) [![Status](https://img.shields.io/badge/status-work%20in%20progress-yellow)]()
 
 
 # finpie - a simple library to download some financial data
