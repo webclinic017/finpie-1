@@ -10,7 +10,7 @@ class CommonTest(object):
     def __init__(self):
         # test ticker
         self.ticker = 'AAPL'
-        self.date = '2022-09-03'
+        self.date = '2022-12-03'
         self.date2 = '2022-12-11'
 
     def df_helper(self, data):
@@ -181,7 +181,6 @@ class NewsDataTest(unittest.TestCase, CommonTest):
         CommonTest.__init__(self)
         #self.news = finpie.NewsData('XOM', 'exxon mobil')
         self.news = finpie.NewsData('XOM', 'exxon oil')
-        #self.news.head = True
 
     def setUp(self):
         warnings.simplefilter("ignore", ResourceWarning)

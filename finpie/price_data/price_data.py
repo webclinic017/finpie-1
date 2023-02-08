@@ -25,27 +25,15 @@
 
 
 
-# import re as _re
-import os
 import re
 import time
 import requests
-import numpy as np
 import pandas as pd
 import datetime as dt
-import dask.dataframe as dd
-# import dask.dataframe as dd
 from tqdm import tqdm
 from io import StringIO
-#from alpha_vantage.timeseries import TimeSeries
 from concurrent.futures import ThreadPoolExecutor
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-# from iexfinance.stocks import get_historical_intraday
 from finpie.base import DataBase
-#from base import DataBase
 
 
 def historical_prices( ticker, start = None, end = None):
@@ -64,9 +52,9 @@ def historical_prices( ticker, start = None, end = None):
     url = f'https://query2.finance.yahoo.com/v7/finance/download/{ticker}?period1={start}&period2={end}&interval=1d'
     r = requests.get(url, headers = headers).text
     df = pd.read_csv(StringIO(r))
-    df.columns = [ col.lower().replace(' ', '_') for col in df.columns ]
+    df.columns = [col.lower().replace(' ', '_') for col in df.columns]
     df.index = pd.to_datetime(df.date, format = '%Y-%m-%d')
-    df.drop('date', inplace = True, axis = 1)
+    df.drop('date', inplace=True, axis=1)
 
     return df
 
@@ -82,27 +70,27 @@ def yahoo_option_chain( ticker ):
     calls = []
     puts = []
     for o in r['optionChain']['result'][0]['options']:
-        calls.append( pd.DataFrame( o['calls'] ) )
-        puts.append( pd.DataFrame( o['puts'] ) )
+        calls.append( pd.DataFrame(o['calls']))
+        puts.append( pd.DataFrame(o['puts']))
     calls = pd.concat(calls)
     puts = pd.concat(puts)
 
-    calls.columns = [ re.sub( r"([A-Z])", r"_\1", col).lower() for col in calls.columns ]
-    puts.columns = [ re.sub( r"([A-Z])", r"_\1", col).lower() for col in puts.columns ]
+    calls.columns = [re.sub( r"([A-Z])", r"_\1", col).lower() for col in calls.columns]
+    puts.columns = [re.sub( r"([A-Z])", r"_\1", col).lower() for col in puts.columns]
 
-    calls.expiration = pd.to_datetime( [ dt.datetime.fromtimestamp( x ).date() for x in calls.expiration ] )
-    calls.last_trade_date = pd.to_datetime( [ dt.datetime.fromtimestamp( x ) for x in calls.last_trade_date ] )
+    calls.expiration = pd.to_datetime([dt.datetime.fromtimestamp(x).date() for x in calls.expiration])
+    calls.last_trade_date = pd.to_datetime([dt.datetime.fromtimestamp(x) for x in calls.last_trade_date])
 
-    puts.expiration = pd.to_datetime( [ dt.datetime.fromtimestamp( x ).date() for x in puts.expiration ] )
-    puts.last_trade_date = pd.to_datetime( [ dt.datetime.fromtimestamp( x ) for x in puts.last_trade_date ] )
+    puts.expiration = pd.to_datetime([dt.datetime.fromtimestamp(x).date() for x in puts.expiration])
+    puts.last_trade_date = pd.to_datetime([dt.datetime.fromtimestamp(x) for x in puts.last_trade_date])
 
-    calls.reset_index(drop = True, inplace = True)
-    puts.reset_index(drop = True, inplace = True)
+    calls.reset_index(drop=True, inplace=True)
+    puts.reset_index(drop=True, inplace=True)
 
     return calls, puts
 
 
-def cboe_option_chain( ticker, head = False):
+def cboe_option_chain(ticker, head=False):
 
     '''db = DataBase()
     db.head = head
@@ -155,18 +143,22 @@ def historical_futures_contracts(date_range):
     '''
 
     with ThreadPoolExecutor(4) as pool:
-        res = list( tqdm( pool.map(_download_prices, date_range), total = len(date_range) ))
-    df_out = dd.concat( [ i for i in res if type(i) != type([0]) ], axis = 0 )
-    df_out = df_out.compute()
+        res = list(tqdm( pool.map(_download_prices, date_range), total=len(date_range)))
+    df_out = pd.concat([i for i in res if type(i) != type([0]) ], axis=0)
     df_out.index.name = 'date'
     return df_out
 
 
 def futures_contracts(date):
-    df = _download_prices(date).compute()
+    df = _download_prices(date)
     df.index.name = 'date'
     return df
 
+def _calc_32(l):
+    r = '32'
+    while len(r) < l:
+        r += '0'
+    return r
 
 def _download_prices(date):
     '''
@@ -175,10 +167,9 @@ def _download_prices(date):
             specified date
     '''
     db = DataBase()
-
     errors = []
     if type(date) == type('str'):
-        date = pd.to_datetime(date, format = '%Y-%m-%d')
+        date = pd.to_datetime(date, format='%Y-%m-%d')
     y = str(date.year)
     if len(str(date.month)) == 2:
         m = str(date.month)
@@ -191,12 +182,8 @@ def _download_prices(date):
     try:
         url = f'https://www.mrci.com/ohlc/{y}/{y[-2:]+m+d}.php'
         soup = db._get_session(url)
-
         df = pd.read_html( str(soup.find('map').find_next('table')) )[0]
-        try:
-            futures_lookup = pd.read_csv( os.path.dirname(__file__) + '/futures_lookup.csv').name.tolist()
-        except:
-            futures_lookup = pd.read_csv( os.path.dirname(__file__) + '\\futures_lookup.csv').name.tolist()
+        futures_lookup = pd.read_csv(r'finpie/price_data/futures_lookup.csv').name.tolist()
         indices = [ i for i, j in enumerate(df.iloc[:,0]) if j in futures_lookup ]
         columns = ['month', 'date', 'open', 'high', 'low', 'close', 'change', 'volume', 'open_interest', 'change_in_oi' ]
         if len(df.columns) == 11:
@@ -209,7 +196,6 @@ def _download_prices(date):
         #session.close()
         return errors
     df.columns = columns
-    #[ i for i in np.unique(df.month).tolist() if i not in futures_lookup ]
 
     first = True
     for i in range(1, len(indices)):
@@ -220,15 +206,31 @@ def _download_prices(date):
             first = False
         else:
             out = out.append(temp)
-    out = out[ out.iloc[:,1] != 'Total Volume and Open Interest']
+    out = out[out.iloc[:,1] != 'Total Volume and Open Interest']
     # out.to_csv('futures.csv')
     out.index = [date] * len(out) #pd.to_datetime( [ f'{i[-2:]}/{i[2:4]}/{i[:2]}' for i in out.date ] )
     out.replace('\+', '', regex = True, inplace = True)
-    out.replace('unch', np.nan, inplace = True)
+    out.replace('unch', 0, inplace = True)
+    cols = ['open', 'high', 'low', 'close', 'change', 'volume', 'open_interest', 'change_in_oi']
+    for col in cols:
+        out.loc[out[col].str.contains('~') == True, col] = [int(x.split('~')[0])+int(x.split('~')[-1])/int(_calc_32(len(x.split('~')[-1])))
+                                                                     for x in out.loc[out[col].str.contains('~') == True, col].values]
+    out = out[~out.change_in_oi.str.contains("Weekly", na=False)]
+    out.loc[:, cols] = out.loc[:, cols].values.astype('float')
+    return out
 
-    out = db._col_to_float(out)
 
-    return dd.from_pandas(out, npartitions = 1)
+
+
 
 if __name__ == '__main__':
     p = 1
+    startdate = '2023-01-01'
+    enddate = '2023-02-08'
+    d_range = pd.date_range(startdate, enddate)
+    '''    dfs = []
+    for d in d_range:
+        df = _download_prices(d)
+        dfs = dfs.append(df)
+        print(d)'''
+    df = historical_futures_contracts(d_range)

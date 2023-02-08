@@ -27,7 +27,7 @@ import pandas as pd
 import datetime as dt
 from finpie.base import DataBase
 
-def cftc( report_type = 'futures_traders', year = 2000 ):
+def cftc(report_type='futures_traders', year=2017):
 
     '''
     # report type options:

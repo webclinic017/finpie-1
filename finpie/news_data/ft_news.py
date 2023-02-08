@@ -207,7 +207,10 @@ class FTNews(CleanNews):
                         article.find('p', class_='o-teaser__standfirst').text.replace('\t', ' ').replace('\n', ' ').strip())
                 except:
                     description.append('nan')
-                date.append(article.find('div', class_='o-teaser__timestamp').text)
+                try:
+                    date.append(article.find('div', class_='o-teaser__timestamp').text)
+                except:
+                    date.append('nan')
         return headline, link, date, description, author, tag
 
 

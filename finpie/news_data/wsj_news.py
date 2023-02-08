@@ -73,7 +73,6 @@ class WSJNews(CleanNews):
             element = WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.XPATH, '//span[contains(text(), "Next Page")]')))
             bool2 = True
             contents = []
-            # max = int( driver.find_element(By.XPATH, '//div[@class="results-menu-wrapper bottom"]//li[@class="results-count"]').text.replace('of ', '') )
             max = int(driver.find_element(By.XPATH, '//span[@class="WSJTheme--total-pages--3FkCtMxZ "]').text.replace('of ',''))
             contents.append(driver.page_source)
             for i in range(max - 1):
@@ -82,39 +81,31 @@ class WSJNews(CleanNews):
                     driver.get(url + f'&page={i + 2}')
                     element = WebDriverWait(driver, 15).until(
                         EC.presence_of_element_located((By.XPATH, '//span[contains(text(), "Next Page")]')))
-                    #driver.find_element(By.XPATH, '//span[contains(text(), "Next Page")]').click()
                     contents.append(driver.page_source)
                 except:
                     try:
-                        # driver.get(url)
                         driver.get(url + f'&page={i + 2}')
-                        # driver.find_element(By.XPATH, '//a[contains(text(), "next")]').click()
                         element = WebDriverWait(driver, 15).until(
                             EC.presence_of_element_located((By.XPATH, '//span[contains(text(), "Next Page")]')))
                         contents.append(driver.page_source)
                     except:
                         driver.get(url + f'&page={i + 2}')
-                        # element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//a[contains(text(), "next")]')))
                         time.sleep(5)
                         contents.append(driver.page_source)
                 if datestop:
                     try:
-                        # d = driver.find_elements(By.XPATH, '//time[@class="date-stamp-container"]')[-1].text
                         d = driver.find_elements(By.XPATH, '//p[contains(@class, "WSJTheme--timestamp")]')[-1].text
                         d = pd.to_datetime(' '.join(d.split(' ')[:3]))
                         if d < pd.to_datetime(datestop):
                             bool2 = False
                             break
                     except:
-                        # d = driver.find_elements(By.XPATH, '//time[@class="date-stamp-container highlight"]')[-1].text
                         d = driver.find_elements(By.XPATH, '//p[contains(@class, "WSJTheme--timestamp")]')[-1].text
                         pass
             if bool2:
                 bool = True
             else:
                 bool = False
-                # Record progress
-                # _print_progress(i, max-1)
             contents.append(driver.page_source)
     
             while bool:
@@ -129,24 +120,18 @@ class WSJNews(CleanNews):
                     driver.get(url)
                     element = WebDriverWait(driver, 15).until(
                         EC.presence_of_element_located((By.XPATH, '//span[contains(text(), "Next Page")]')))
-                    # driver.switch_to.frame(0)
-                    # driver.find_elements(By.XPATH, '//article')
-                    # max = int( driver.find_element(By.XPATH, '//div[@class="results-menu-wrapper bottom"]//li[@class="results-count"]').text.replace('of ', '') )
                     max = int(driver.find_element(By.XPATH, '//span[@class="WSJTheme--total-pages--3FkCtMxZ "]').text.replace('of ', ''))
                     contents.append(driver.page_source)
                     for i in range(max - 1):
                         try:
                             time.sleep(random.randint(0, 2))
                             driver.get(url + f'&page={i + 2}')
-                            # driver.find_element(By.XPATH, '//a[contains(text(), "next")]').click()
                             element = WebDriverWait(driver, 15).until(
                                 EC.presence_of_element_located((By.XPATH, '//span[contains(text(), "Next Page")]')))
                             contents.append(driver.page_source)
                         except:
                             try:
                                 driver.get(url + f'&page={i + 2}')
-                                # driver.get(url)
-                                # driver.find_element(By.XPATH, '//a[contains(text(), "next")]').click()
                                 element = WebDriverWait(driver, 15).until(
                                     EC.presence_of_element_located((By.XPATH, '//span[contains(text(), "Next Page")]')))
                                 contents.append(driver.page_source)
@@ -154,7 +139,6 @@ class WSJNews(CleanNews):
                                 driver.get(url + f'&page={i + 2}')
                                 contents.append(driver.page_source)
                         if datestop:
-                            # d = driver.find_elements(By.XPATH, '//time[@class="date-stamp-container"]')[-1].text
                             d = driver.find_elements(By.XPATH, '//p[contains(@class, "WSJTheme--timestamp")]')[-1].text
                             d = pd.to_datetime(' '.join(d.split(' ')[:3]))
                             if d > pd.to_datetime(datestop):
@@ -231,6 +215,6 @@ class WSJNews(CleanNews):
 if __name__ == '__main__':
     p = 1
     # quick test
-    #wsj = WSJNews('AAPL', 'AAPL')
-    #data = wsj.wsj(datestop='2022-12-01')
-    #data
+    wsj = WSJNews('AAPL', 'AAPL')
+    data = wsj.wsj(datestop='2022-12-01')
+    print(data)
