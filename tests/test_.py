@@ -10,7 +10,7 @@ class CommonTest(object):
     def __init__(self):
         # test ticker
         self.ticker = 'AAPL'
-        self.date = '2022-12-03'
+        self.date = '2022-12-07'
         self.date2 = '2023-01-31'
 
     def df_helper(self, data):
